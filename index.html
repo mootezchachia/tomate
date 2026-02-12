@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <meta name="theme-color" content="#1a1210">
+  <meta name="description" content="Tomate Cerise — Eat and Drink. Découvrez notre carte.">
+  <title>Tomate Cerise — Eat & Drink</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --tomato: #c0392b;
+      --tomato-glow: #e74c3c;
+      --tomato-deep: #922b21;
+      --gold: #d4a056;
+      --gold-light: #f0d9a8;
+      --gold-muted: rgba(212,160,86,0.15);
+      --cream: #faf6f0;
+      --cream-warm: #f5ede0;
+      --parchment: #efe8db;
+      --ink: #1a1210;
+      --ink-soft: #3d322a;
+      --ink-muted: #7a6e63;
+      --ink-faint: #b8ad9f;
+      --surface: rgba(255,253,248,0.85);
+      --surface-solid: #fffdf8;
+      --divider: rgba(180,165,145,0.2);
+      --nav-h: 52px;
+      --tabs-h: 44px;
+      --total-nav: 96px;
+      --serif: 'Cormorant Garamond', 'Georgia', serif;
+      --sans: 'DM Sans', system-ui, sans-serif;
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    html {
+      scroll-padding-top: calc(var(--total-nav) + 12px);
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      font-family: var(--sans);
+      background: var(--cream);
+      color: var(--ink);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+      min-height: 100dvh;
+    }
+
+    /* ══════════════════════════════════
+       TEXTURE OVERLAY — parchment grain
+       ══════════════════════════════════ */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ══════════════════════════
+       HERO — warm, inviting
+       ══════════════════════════ */
+    .hero {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 52px 24px 36px;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% 0%, rgba(192,57,43,0.06) 0%, transparent 70%),
+        linear-gradient(180deg, var(--cream) 0%, var(--cream-warm) 100%);
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 10%;
+      right: 10%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: 0.4;
+    }
+
+    .hero-logo {
+      width: min(72vw, 260px);
+      height: auto;
+      opacity: 0;
+      transform: translateY(12px);
+      animation: fadeUp 0.8s var(--ease-out) 0.1s forwards;
+    }
+
+    .hero-sub {
+      margin-top: 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      opacity: 0;
+      animation: fadeUp 0.8s var(--ease-out) 0.35s forwards;
+    }
+
+    .hero-line {
+      width: 28px;
+      height: 1px;
+      background: var(--gold);
+    }
+
+    .hero-sub span {
+      font-family: var(--sans);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 3.5px;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+    }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ══════════════════════════════
+       STICKY NAV — layered, premium
+       ══════════════════════════════ */
+    .sticky-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(250,246,240,0.92);
+      backdrop-filter: blur(16px) saturate(1.4);
+      -webkit-backdrop-filter: blur(16px) saturate(1.4);
+      border-bottom: 1px solid var(--divider);
+      transition: box-shadow 0.3s ease;
+    }
+
+    .sticky-nav.scrolled {
+      box-shadow: 0 4px 24px rgba(26,18,16,0.06), 0 1px 3px rgba(26,18,16,0.04);
+    }
+
+    /* ─── Group Toggle ─── */
+    .group-toggle {
+      display: flex;
+      justify-content: center;
+      padding: 8px 20px 0;
+      gap: 4px;
+    }
+
+    .group-btn {
+      position: relative;
+      padding: 10px 32px;
+      border: none;
+      border-radius: 0;
+      background: transparent;
+      font-family: var(--serif);
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--ink-faint);
+      cursor: pointer;
+      transition: color 0.35s ease;
+      -webkit-tap-highlight-color: transparent;
+      min-height: 44px;
+      letter-spacing: 0.3px;
+    }
+
+    .group-btn::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 20%;
+      right: 20%;
+      height: 2px;
+      background: var(--tomato);
+      border-radius: 1px;
+      transform: scaleX(0);
+      transition: transform 0.4s var(--ease-out);
+    }
+
+    .group-btn.active {
+      color: var(--ink);
+    }
+
+    .group-btn.active::after {
+      transform: scaleX(1);
+    }
+
+    .group-btn:not(.active):active {
+      color: var(--ink-soft);
+    }
+
+    /* ─── Category Chips ─── */
+    .chips-track {
+      position: relative;
+    }
+
+    .chips-track::before,
+    .chips-track::after {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 28px;
+      z-index: 3;
+      pointer-events: none;
+    }
+    .chips-track::before {
+      left: 0;
+      background: linear-gradient(90deg, rgba(250,246,240,0.95), transparent);
+    }
+    .chips-track::after {
+      right: 0;
+      background: linear-gradient(270deg, rgba(250,246,240,0.95), transparent);
+    }
+
+    .chips {
+      display: flex;
+      gap: 6px;
+      padding: 6px 20px 10px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .chips::-webkit-scrollbar { display: none; }
+
+    .chip {
+      flex-shrink: 0;
+      padding: 7px 16px;
+      border: 1px solid transparent;
+      border-radius: 100px;
+      background: transparent;
+      font-family: var(--sans);
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--ink-muted);
+      cursor: pointer;
+      white-space: nowrap;
+      min-height: 36px;
+      display: inline-flex;
+      align-items: center;
+      transition: all 0.3s ease;
+      -webkit-tap-highlight-color: transparent;
+      letter-spacing: 0.2px;
+    }
+
+    .chip.active {
+      background: var(--ink);
+      color: var(--cream);
+      border-color: var(--ink);
+      box-shadow: 0 2px 8px rgba(26,18,16,0.15);
+    }
+
+    .chip:not(.active):active {
+      background: var(--gold-muted);
+    }
+
+    /* ══════════════════════════════
+       MENU CONTENT
+       ══════════════════════════════ */
+    .menu-wrap {
+      padding: 20px 16px 60px;
+      max-width: 540px;
+      margin: 0 auto;
+    }
+
+    /* ─── Category Block ─── */
+    .cat-block {
+      margin-bottom: 32px;
+      padding: 28px 22px 24px;
+      background: var(--surface-solid);
+      border: 1px solid var(--divider);
+      border-radius: 20px;
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(16px);
+    }
+
+    .cat-block.show {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 0.55s var(--ease-out), transform 0.55s var(--ease-out);
+    }
+
+    /* subtle warm glow top-left corner */
+    .cat-block::before {
+      content: '';
+      position: absolute;
+      top: -40px;
+      left: -40px;
+      width: 100px;
+      height: 100px;
+      background: radial-gradient(circle, rgba(192,57,43,0.04) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .cat-header {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .cat-name {
+      font-family: var(--serif);
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.15;
+      letter-spacing: -0.3px;
+    }
+
+    .cat-count {
+      font-family: var(--sans);
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--ink-faint);
+      letter-spacing: 0.5px;
+      padding-bottom: 2px;
+    }
+
+    .cat-rule {
+      width: 32px;
+      height: 1.5px;
+      background: var(--gold);
+      border: none;
+      border-radius: 1px;
+      margin-bottom: 18px;
+      opacity: 0.7;
+    }
+
+    /* ─── Pizza Legend ─── */
+    .pizza-legend {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      padding: 8px 14px;
+      margin-bottom: 14px;
+      border: 1px solid var(--divider);
+      border-radius: 10px;
+      background: var(--gold-muted);
+    }
+
+    .legend-tag {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--ink-soft);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .legend-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+    }
+    .legend-dot.lg { background: var(--tomato); }
+    .legend-dot.sm { background: var(--ink-faint); }
+
+    /* ─── Menu Item Row ─── */
+    .menu-row {
+      display: flex;
+      align-items: baseline;
+      padding: 11px 0;
+      gap: 6px;
+      position: relative;
+    }
+
+    .menu-row + .menu-row {
+      border-top: 1px solid rgba(180,165,145,0.12);
+    }
+
+    .row-name {
+      font-family: var(--sans);
+      font-size: 14.5px;
+      font-weight: 400;
+      color: var(--ink-soft);
+      line-height: 1.35;
+      flex-shrink: 1;
+    }
+
+    .row-dots {
+      flex: 1;
+      min-width: 16px;
+      border-bottom: 1px dotted var(--ink-faint);
+      opacity: 0.35;
+      margin-bottom: 3px;
+    }
+
+    .row-price {
+      font-family: var(--serif);
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--tomato);
+      white-space: nowrap;
+      flex-shrink: 0;
+      letter-spacing: -0.2px;
+    }
+
+    .row-price .currency {
+      font-family: var(--sans);
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--ink-faint);
+      margin-left: 3px;
+      letter-spacing: 0.5px;
+      vertical-align: 1px;
+    }
+
+    /* dual pizza price */
+    .row-price .slash {
+      font-weight: 400;
+      color: var(--ink-faint);
+      margin: 0 2px;
+      font-size: 13px;
+    }
+    .row-price .sm-price {
+      font-weight: 400;
+      color: var(--ink-muted);
+      font-size: 14px;
+    }
+
+    /* ══════════════════════════════
+       FOOTER
+       ══════════════════════════════ */
+    .footer {
+      text-align: center;
+      padding: 28px 16px 44px;
+      position: relative;
+    }
+
+    .footer::before {
+      content: '';
+      display: block;
+      width: 40px;
+      height: 1px;
+      background: var(--gold);
+      opacity: 0.35;
+      margin: 0 auto 20px;
+    }
+
+    .footer-logo {
+      width: min(32vw, 100px);
+      height: auto;
+      opacity: 0.3;
+      margin-bottom: 10px;
+      filter: grayscale(0.5);
+    }
+
+    .footer-text {
+      font-family: var(--sans);
+      font-size: 10.5px;
+      color: var(--ink-faint);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    /* ══════════════════════════════
+       TRANSITIONS / GROUP SWITCH
+       ══════════════════════════════ */
+    .menu-wrap.switching {
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 0.15s ease, transform 0.15s ease;
+    }
+    .menu-wrap.entering {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 0.35s var(--ease-out), transform 0.35s var(--ease-out);
+    }
+
+    /* ═══════════════════
+       REDUCED MOTION
+       ═══════════════════ */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      .cat-block { opacity: 1; transform: none; }
+      .hero-logo, .hero-sub { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══ Hero ═══ -->
+  <header class="hero">
+    <img src="assets/logo.png" alt="Tomate Cerise" class="hero-logo" width="260" height="70">
+    <div class="hero-sub">
+      <span class="hero-line"></span>
+      <span>La Carte</span>
+      <span class="hero-line"></span>
+    </div>
+  </header>
+
+  <!-- ═══ Sticky Nav ═══ -->
+  <nav class="sticky-nav" id="nav">
+    <div class="group-toggle">
+      <button class="group-btn active" data-g="food">Manger</button>
+      <button class="group-btn" data-g="drinks">Boire</button>
+    </div>
+    <div class="chips-track">
+      <div class="chips" id="chips"></div>
+    </div>
+  </nav>
+
+  <!-- ═══ Menu ═══ -->
+  <main class="menu-wrap" id="menu"></main>
+
+  <!-- ═══ Footer ═══ -->
+  <footer class="footer">
+    <img src="assets/logo.png" alt="" class="footer-logo" width="100" height="27">
+    <p class="footer-text">Tomate Cerise &copy; 2026</p>
+  </footer>
+
+<script>
+// ─── Data ───────────────────────────────────────
+const DATA = {
+  food: [
+    { id:'les-plats', title:'Les Plats', items:[
+      {n:'Escalope Grillée Light & Tasty',p:'17.5'},
+      {n:'Escalope Panée Extra Crunchy',p:'18.5'},
+      {n:'Escalope Crème Champignon',p:'21'},
+      {n:'Gratin Signature (Poulet + Truffe)',p:'24'}
+    ]},
+    { id:'les-pates', title:'Les Pâtes', items:[
+      {n:'Penne de la Mer (Crevettes)',p:'21'},
+      {n:'Tagliatelle Poulet Champignon Truffe',p:'19'},
+      {n:'Fell aux Boulettes',p:'17'},
+      {n:'Spaghetti Heritage (Bolognaise)',p:'15'},
+      {n:'Penne la Crémeuse (4 Fromages)',p:'19'}
+    ]},
+    { id:'sandwichs', title:'Sandwichs', items:[
+      {n:'Escalope Grillée',p:'12'},
+      {n:'Escalope Panée',p:'13'},
+      {n:'Mexicain',p:'14'},
+      {n:'Chorizo',p:'13'},
+      {n:'Escalope à la Crème Champignons',p:'14'},
+      {n:'Jambon Fumé',p:'10.5'},
+      {n:'Crevette',p:'17'},
+      {n:'Crevette Panée',p:'18'},
+      {n:'Crevette à la Crème (Bisk)',p:'19.5'}
+    ]},
+    { id:'baguette-farcie', title:'Baguette Farcie', items:[
+      {n:'Escalope Grillée',p:'14'},
+      {n:'Escalope Panée',p:'15.5'},
+      {n:'Viande Hachée',p:'13'}
+    ]},
+    { id:'pizza', title:'Pizza', pizza:true, items:[
+      {n:'Marguerite',p:'11'},
+      {n:'Neptune',p:'20',ps:'13'},
+      {n:'Poulet Pesto',p:'21',ps:'14'},
+      {n:'Mexicaine',p:'21',ps:'14'},
+      {n:'Chorizo',p:'19',ps:'12'},
+      {n:'Bianca',p:'18',ps:'11'},
+      {n:'Crevette',p:'24',ps:'17'},
+      {n:'4 Fromages',p:'22',ps:'15'}
+    ]},
+    { id:'omelettes', title:'Omelettes', items:[
+      {n:'Fromage',p:'8'},
+      {n:'Thon',p:'9.8'},
+      {n:'Jambon',p:'9'},
+      {n:'Escalope',p:'10.5'}
+    ]},
+    { id:'crepes-salees', title:'Crêpes Salées', items:[
+      {n:'Classique Thon',p:'10.5'},
+      {n:'Classique Jambon',p:'9.5'},
+      {n:'Escalope / Champignon',p:'13'},
+      {n:'Viande Hachée',p:'12'},
+      {n:'Chorizo',p:'11'}
+    ]},
+    { id:'crepes-sucrees', title:'Crêpes Sucrées', items:[
+      {n:'Nutella',p:'9.5'},
+      {n:'Nutella + Fruit',p:'13.5'},
+      {n:'Nutella Fruits Secs',p:'14.5'},
+      {n:"Nutella M&M's",p:'14.5'},
+      {n:'Nutella Ferrero',p:'16'},
+      {n:'Nutella Chocolat Blanc',p:'13'},
+      {n:'Nutella Spéculoos',p:'14'}
+    ]}
+  ],
+  drinks: [
+    { id:'cafe', title:'Café', items:[
+      {n:'Express',p:'3.5'},
+      {n:'Cappuccin',p:'3.8'},
+      {n:'Direct',p:'4'},
+      {n:'Américain',p:'4'},
+      {n:'Cappuccino',p:'5'},
+      {n:'Macchiato',p:'5.5'},
+      {n:'Iced Coffee (Sirop + Lait Concentré)',p:'7'},
+      {n:'Iced Expresso',p:'4.5'},
+      {n:'Iced Latte',p:'5'}
+    ]},
+    { id:'the', title:'Thé', items:[
+      {n:'Thé Menthe',p:'3'},
+      {n:'Thé aux Amandes',p:'5'},
+      {n:'Thé aux Pignons',p:'6'},
+      {n:'Thé Glacé',p:'4'}
+    ]},
+    { id:'hot-drinks', title:'Hot Drinks', items:[
+      {n:'Chocolat Chaud',p:'7'},
+      {n:'Chocolat au Lait',p:'4'},
+      {n:'Nutellaciono',p:'8'}
+    ]},
+    { id:'affogato', title:'Affogato', items:[
+      {n:'Affogato',p:'6'},
+      {n:'Affogato Nutella',p:'8'},
+      {n:'Affogato Spéculoos',p:'9'},
+      {n:'Affogato Fruits Secs',p:'8.5'}
+    ]},
+    { id:'jus', title:'Jus', items:[
+      {n:'Citronnade',p:'4.5'},
+      {n:"Jus d'Orange",p:'4.5'},
+      {n:'Jus de Banane',p:'7'},
+      {n:'Lait de Poule',p:'11'}
+    ]},
+    { id:'milkshake', title:'Milkshake', items:[
+      {n:'Nutella',p:'9.5'},
+      {n:'Spéculoos',p:'10.5'},
+      {n:'Fruits Secs',p:'10.5'}
+    ]},
+    { id:'smoothies', title:'Smoothies', items:[
+      {n:'Fraise',p:'9'},
+      {n:'Banane',p:'10'},
+      {n:'Nutella',p:'9'},
+      {n:'Fruits Rouges',p:'10'}
+    ]},
+    { id:'cocktail', title:'Cocktail', items:[
+      {n:'2 Fruits',p:'9'},
+      {n:'3 Fruits',p:'11.5'}
+    ]},
+    { id:'mojito', title:'Mojito', items:[
+      {n:'Classique',p:'8'},
+      {n:'Blue / Red',p:'9.5'},
+      {n:'Énergétique',p:'13.5'}
+    ]},
+    { id:'fresh-drinks', title:'Fresh Drinks', items:[
+      {n:'Soda',p:'4'},
+      {n:'Boisson Énergétique',p:'8'},
+      {n:'Eau 1L',p:'3'},
+      {n:'Eau 0.5L',p:'2'}
+    ]}
+  ]
+};
+
+// ─── State ──────────────────────────────────────
+let group = 'food';
+let isScrolling = false;   // lock to prevent scroll-spy fighting tab clicks
+let scrollTimer = null;
+
+const nav      = document.getElementById('nav');
+const chipsEl  = document.getElementById('chips');
+const menuEl   = document.getElementById('menu');
+
+// ─── Helpers ────────────────────────────────────
+function fmtPrice(v) {
+  const n = parseFloat(v);
+  return Number.isInteger(n) ? n.toString() : n.toFixed(1);
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+}
+
+// ─── Render ─────────────────────────────────────
+function render(animate) {
+  const cats = DATA[group];
+
+  // Chips
+  chipsEl.innerHTML = cats.map((c,i) =>
+    `<button class="chip${i===0?' active':''}" data-id="${c.id}">${escHtml(c.title)}</button>`
+  ).join('');
+
+  // Sections
+  menuEl.innerHTML = cats.map(c => {
+    const legend = c.pizza ? `
+      <div class="pizza-legend">
+        <span class="legend-tag"><span class="legend-dot lg"></span>Grande</span>
+        <span class="legend-tag"><span class="legend-dot sm"></span>Petite</span>
+      </div>` : '';
+
+    const rows = c.items.map(it => {
+      let priceHtml;
+      if (c.pizza && it.ps) {
+        priceHtml = `<span class="row-price">${fmtPrice(it.p)}<span class="slash"> / </span><span class="sm-price">${fmtPrice(it.ps)}</span><span class="currency">DT</span></span>`;
+      } else {
+        priceHtml = `<span class="row-price">${fmtPrice(it.p)}<span class="currency">DT</span></span>`;
+      }
+      return `<div class="menu-row"><span class="row-name">${escHtml(it.n)}</span><span class="row-dots"></span>${priceHtml}</div>`;
+    }).join('');
+
+    return `
+      <section class="cat-block" id="${c.id}">
+        <div class="cat-header">
+          <h2 class="cat-name">${escHtml(c.title)}</h2>
+          <span class="cat-count">${c.items.length}</span>
+        </div>
+        <hr class="cat-rule">
+        ${legend}
+        <div class="menu-items">${rows}</div>
+      </section>`;
+  }).join('');
+
+  // Re-attach
+  bindChips();
+  observeReveal();
+  observeSpy();
+}
+
+// ─── Chip Click → Scroll ────────────────────────
+function bindChips() {
+  chipsEl.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const target = document.getElementById(chip.dataset.id);
+      if (!target) return;
+
+      // Set active immediately
+      chipsEl.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+
+      // Lock scroll spy during programmatic scroll
+      isScrolling = true;
+      clearTimeout(scrollTimer);
+
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      // Unlock after scroll finishes (generous timeout)
+      scrollTimer = setTimeout(() => { isScrolling = false; }, 900);
+    });
+  });
+}
+
+// ─── Reveal on Scroll ───────────────────────────
+let revealObs = null;
+function observeReveal() {
+  if (revealObs) revealObs.disconnect();
+  const blocks = menuEl.querySelectorAll('.cat-block');
+  if (!('IntersectionObserver' in window)) {
+    blocks.forEach(b => b.classList.add('show'));
+    return;
+  }
+  let delay = 0;
+  revealObs = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        // stagger each reveal by 60ms
+        const d = delay;
+        delay += 60;
+        setTimeout(() => el.classList.add('show'), d);
+        revealObs.unobserve(el);
+      }
+    });
+  }, { threshold: 0.08 });
+  blocks.forEach(b => revealObs.observe(b));
+}
+
+// ─── Scroll Spy ─────────────────────────────────
+let spyObs = null;
+function observeSpy() {
+  if (spyObs) spyObs.disconnect();
+  const blocks = menuEl.querySelectorAll('.cat-block');
+  if (!('IntersectionObserver' in window) || !blocks.length) return;
+
+  spyObs = new IntersectionObserver(entries => {
+    if (isScrolling) return; // don't fight tab clicks
+
+    // find topmost intersecting section
+    let bestId = null;
+    let bestTop = Infinity;
+    entries.forEach(e => {
+      if (e.isIntersecting && e.boundingClientRect.top < bestTop) {
+        bestTop = e.boundingClientRect.top;
+        bestId = e.target.id;
+      }
+    });
+    if (bestId) highlightChip(bestId);
+  }, {
+    threshold: 0,
+    rootMargin: `-${Math.round(96 + 14)}px 0px -55% 0px`
+  });
+
+  blocks.forEach(b => spyObs.observe(b));
+}
+
+function highlightChip(id) {
+  const chips = chipsEl.querySelectorAll('.chip');
+  let activeChip = null;
+  chips.forEach(c => {
+    const match = c.dataset.id === id;
+    c.classList.toggle('active', match);
+    if (match) activeChip = c;
+  });
+  // auto-scroll chip into view — use scrollLeft math, NOT scrollIntoView
+  // scrollIntoView on the chip would scroll the whole page
+  if (activeChip) {
+    const track = chipsEl;
+    const chipLeft = activeChip.offsetLeft;
+    const chipW = activeChip.offsetWidth;
+    const trackW = track.offsetWidth;
+    const scrollTarget = chipLeft - (trackW / 2) + (chipW / 2);
+    track.scrollTo({ left: scrollTarget, behavior: 'smooth' });
+  }
+}
+
+// ─── Group Toggle ───────────────────────────────
+document.querySelectorAll('.group-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (btn.dataset.g === group) return;
+    group = btn.dataset.g;
+    document.querySelectorAll('.group-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.g === group)
+    );
+
+    // Crossfade
+    menuEl.classList.add('switching');
+    menuEl.classList.remove('entering');
+    setTimeout(() => {
+      render(true);
+      window.scrollTo({ top: 0 });
+      requestAnimationFrame(() => {
+        menuEl.classList.remove('switching');
+        menuEl.classList.add('entering');
+        setTimeout(() => menuEl.classList.remove('entering'), 400);
+      });
+    }, 160);
+  });
+});
+
+// ─── Nav shadow on scroll ───────────────────────
+let ticking = false;
+window.addEventListener('scroll', () => {
+  if (!ticking) {
+    requestAnimationFrame(() => {
+      nav.classList.toggle('scrolled', window.scrollY > 10);
+      ticking = false;
+    });
+    ticking = true;
+  }
+}, { passive: true });
+
+// ─── Init ───────────────────────────────────────
+render(true);
+</script>
+</body>
+</html>
